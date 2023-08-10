@@ -24,3 +24,7 @@ opencc==1.1.1
 demucs
 openai-whisper
 gradio
+pyaudio
+openai
+speechrecognition
+keyboard
