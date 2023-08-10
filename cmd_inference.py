@@ -89,12 +89,8 @@ if __name__ == "__main__":
 
     if language is not None:
         text = language_marks[language] + text + language_marks[language]
-        if spk in speaker_ids:
-           speaker_id = 0
-        else:
-           # 处理找不到说话人的情况
-           speaker_id = 0
-
+        #speakid設定
+        speaker_id = 0
         stn_tst = get_text(text, hps, False)
         with no_grad():
             x_tst = stn_tst.unsqueeze(0).to(device)
