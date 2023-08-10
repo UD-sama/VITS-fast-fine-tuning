@@ -87,7 +87,7 @@ if __name__ == "__main__":
     speaker_ids = hps.speakers
 
 
-def generate_audio(output_path, model_path, config_path, language, text, spk,
+def generate_audio(output_path, model_path, config_path, language, text, spkid,
                    noise_scale, noise_scale_w, length_scale, output_name):
     # 加载模型和配置
     hps = utils.get_hparams_from_file(config_path)
@@ -100,8 +100,8 @@ def generate_audio(output_path, model_path, config_path, language, text, spk,
     _ = net_g.eval()
     _ = utils.load_checkpoint(model_path, net_g, None)
     
-    # 设置说话人 ID，这里设置为 0
-    speaker_id = 0
+    # 设置说话人 ID
+    speaker_id = spkid
     
     # 获取文本的表示
     stn_tst = get_text(text, hps, False)
