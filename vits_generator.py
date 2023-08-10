@@ -87,20 +87,33 @@ if __name__ == "__main__":
     speaker_ids = hps.speakers
 
 
-    if language is not None:
-        text = language_marks[language] + text + language_marks[language]
-        #speakid設定
-        speaker_id = 0
-        stn_tst = get_text(text, hps, False)
-        with no_grad():
-            x_tst = stn_tst.unsqueeze(0).to(device)
-            x_tst_lengths = LongTensor([stn_tst.size(0)]).to(device)
-            sid = LongTensor([speaker_id]).to(device)
-            audio = net_g.infer(x_tst, x_tst_lengths, sid=sid, noise_scale=noise_scale, noise_scale_w=noise_scale_w,
-                                length_scale=1.0 / length)[0][0, 0].data.cpu().float().numpy()
-        del stn_tst, x_tst, x_tst_lengths, sid
+def generate_audio(output_path, model_path, config_path, language, text, spk,
+                   noise_scale, noise_scale_w, length_scale, output_name):
+    # 加载模型和配置
+    hps = utils.get_hparams_from_file(config_path)
+    net_g = SynthesizerTrn(
+        len(hps.symbols),
+        hps.data.filter_length // 2 + 1,
+        hps.train.segment_size // hps.data.hop_length,
+        n_speakers=hps.data.n_speakers,
+        **hps.model).to(device)
+    _ = net_g.eval()
+    _ = utils.load_checkpoint(model_path, net_g, None)
+    
+    # 设置说话人 ID，这里设置为 0
+    speaker_id = 0
+    
+    # 获取文本的表示
+    stn_tst = get_text(text, hps, False)
+    with no_grad():
+        x_tst = stn_tst.unsqueeze(0).to(device)
+        x_tst_lengths = LongTensor([stn_tst.size(0)]).to(device)
+        sid = LongTensor([speaker_id]).to(device)
+        audio = net_g.infer(x_tst, x_tst_lengths, sid=sid, noise_scale=noise_scale, noise_scale_w=noise_scale_w,
+                            length_scale=1.0 / length_scale)[0][0, 0].data.cpu().float().numpy()
+    del stn_tst, x_tst, x_tst_lengths, sid
 
-        wavf.write(str(output_dir)+"/"+output_name+".wav",hps.data.sampling_rate,audio)
+    wavf.write(str(output_dir)+"/"+output_name+".wav",hps.data.sampling_rate,audio)
     
 
     
