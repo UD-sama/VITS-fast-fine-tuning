@@ -1,4 +1,3 @@
-# chatgpt API key : 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
 import openai
 
 def generate_text(prompt):
