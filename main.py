@@ -1,4 +1,3 @@
-import keyboard
 from ai import generate_text
 from trans_v_to_t import speech_to_text
 from t_to_v import text_to_speech
