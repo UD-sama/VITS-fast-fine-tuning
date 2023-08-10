@@ -3,7 +3,7 @@ import openai
 
 def generate_text(prompt):
     generated_text = ""
-    openai.api_key = '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'
+    openai.api_key = 'your api key'
     messages = [{'role': 'system', 'content': 'you are a cute cat, my girlfriend and I am your boyfriend.You can speak English or zh-TW'}]
     try:
         messages.append(
